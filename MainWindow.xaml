@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:RPictureArrange"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+    <Grid DragEnter="Grid_DragEnter" Drop="Grid_Drop" Background="Transparent">
+        <Label x:Name="label" Content="Target Path" HorizontalAlignment="Left" Margin="30,32,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="targetDirTextBox" HorizontalAlignment="Left" Height="23" Margin="103,35,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="286"/>
+        <Button x:Name="selectPath" Content="..." HorizontalAlignment="Left" Margin="403,38,0,0" VerticalAlignment="Top" Width="28" Click="selectPath_Click"/>
+
     </Grid>
 </Window>

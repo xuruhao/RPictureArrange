@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,51 @@ namespace RPictureArrange
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        string targetPath;
         public MainWindow()
         {
             InitializeComponent();
+            RegistryKey pRegKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\LimInfi", true);
+           
+            if (pRegKey == null)
+            {
+                pRegKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\LimInfi");
+            }
+
+            targetPath = pRegKey.GetValue("TargetPath") as string;
+
+            if (targetPath == null)
+            {
+                pRegKey.SetValue("TargetPath", @"C:\PHOTOS\");
+                targetPath = @"C:\PHOTOS\";
+            }
+
+            this.AllowDrop = true;
+
+
+            
+        }
+
+        private void selectPath_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                targetDirTextBox.Text = openFileDialog.FileName;
+            }
+
+
+        }
+
+        private void Grid_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Move;
+        }
+
+        private void Grid_Drop(object sender, DragEventArgs e)
+        {
+            string[] droppedFilenames = e.Data.GetData(DataFormats.FileDrop, true) as string[];
         }
     }
 }

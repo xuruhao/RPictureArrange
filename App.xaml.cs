@@ -13,5 +13,14 @@ namespace RPictureArrange
     /// </summary>
     public partial class App : Application
     {
+        public static App Curr
+        {
+            get
+            {
+                return (Application.Current as App);
+            }
+        }
+
+
     }
 }
