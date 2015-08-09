@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,9 +64,37 @@ namespace RPictureArrange
             e.Effects = DragDropEffects.Move;
         }
 
+        private void ProcessOnFile(string sf)
+        {
+
+            byte[] content 
+
+
+        }
+
         private void Grid_Drop(object sender, DragEventArgs e)
         {
             string[] droppedFilenames = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+
+
+            foreach(string sf in droppedFilenames)
+            {
+                FileAttributes attr = File.GetAttributes(sf);
+
+                //detect whether its a directory or file
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+
+                }
+                else
+                {
+                    string ext = System.IO.Path.GetExtension(sf).ToLower();
+                    if (ext == ".jpg") ProcessOnFile(sf);
+                }
+
+            }
+
+
         }
     }
 }
