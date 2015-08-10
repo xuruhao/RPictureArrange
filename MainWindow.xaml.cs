@@ -101,6 +101,26 @@ namespace RPictureArrange
         }
 
 
+        private void GetAllDirList(string strBaseDir)
+        {
+            DirectoryInfo di = new DirectoryInfo(strBaseDir);
+
+
+            // #1 Get All Files
+            FileInfo[] fis = di.GetFiles("*.jpg");
+            foreach(FileInfo fi in fis)
+            {
+                ProcessOnFile(fi.FullName, ".jpg");
+            }
+
+
+            // #2 Recursive to directory
+            foreach (DirectoryInfo subdi in di.GetDirectories())
+            {
+                GetAllDirList(subdi.FullName);
+            }
+        }
+
 
         private void Grid_Drop(object sender, DragEventArgs e)
         {
@@ -114,7 +134,7 @@ namespace RPictureArrange
                 //detect whether its a directory or file
                 if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-
+                    GetAllDirList(sf);
                 }
                 else
                 {
