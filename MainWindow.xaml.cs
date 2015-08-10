@@ -1,9 +1,12 @@
-﻿using Microsoft.Win32;
+﻿using ExifLib;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,9 +46,7 @@ namespace RPictureArrange
             }
 
             this.AllowDrop = true;
-
-
-            
+            targetDirTextBox.Text = targetPath;
         }
 
         private void selectPath_Click(object sender, RoutedEventArgs e)
@@ -64,13 +65,42 @@ namespace RPictureArrange
             e.Effects = DragDropEffects.Move;
         }
 
-        private void ProcessOnFile(string sf)
+
+
+
+
+        MD5 md5 = new MD5CryptoServiceProvider();
+
+        private void ProcessOnFile(string sf, string extName)
         {
+            // #1 Get MD5 Filename
+            byte[] contents = File.ReadAllBytes(sf);
+            byte[] output = md5.ComputeHash(contents);
+            string newFileName = BitConverter.ToString(output).Replace("-", "") + extName;
 
-            byte[] content 
+
+            // #2 Get Taken DateTime
+            string outDirName = "";
+            using (ExifReader reader = new ExifReader(sf))
+            {
+                DateTime datePictureTaken;
+                if (reader.GetTagValue(ExifTags.DateTime, out datePictureTaken))
+                {
+                    outDirName = string.Format("{0}-{1}", datePictureTaken.Year.ToString("D4"), datePictureTaken.Month.ToString("D2"));
+                }
+                else
+                {
+                    outDirName = "UNKNOWN";
+                }
+            }
 
 
+            // #3 Create directory if not exists
+            Directory.CreateDirectory(this.targetPath + outDirName);
+            File.WriteAllBytes(this.targetPath + outDirName + @"\" + newFileName + extName, contents);
         }
+
+
 
         private void Grid_Drop(object sender, DragEventArgs e)
         {
@@ -89,7 +119,9 @@ namespace RPictureArrange
                 else
                 {
                     string ext = System.IO.Path.GetExtension(sf).ToLower();
-                    if (ext == ".jpg") ProcessOnFile(sf);
+                    //if (ext == ".jpg" || ext == ".png") ProcessOnFile(sf, extName);
+                    if (ext == ".jpg") ProcessOnFile(sf, ext);
+
                 }
 
             }
