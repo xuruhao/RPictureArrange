@@ -150,7 +150,15 @@ namespace RPictureArrange
 
 
             // Move File
-            File.Move(sf, this.targetPath + outDirName + @"\" + nf);
+
+            if (!File.Exists(this.targetPath + outDirName + @"\" + nf))
+            {
+                File.Move(sf, this.targetPath + outDirName + @"\" + nf);
+            }
+            else
+            {
+                File.Delete(sf);
+            }
         }
 
 
